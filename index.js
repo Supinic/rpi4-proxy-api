@@ -4,6 +4,7 @@ const baseURL = `http://localhost:${port}/${topLevelPath}`;
 
 const definition = {};
 const subroutes = [
+	["maria", "maria.js"],
 	["ssd", "ssd.js"]
 ];
 
