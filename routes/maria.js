@@ -8,7 +8,7 @@ module.exports = {
 		let memory;
 		try {
 			const pidResult = await shell("pidof mysqld", { timeout: 5_000 });
-			const pid = pidResult.stdout.replaceAll(/\s+/g, "");
+			const pid = pidResult.stdout.trim();
 			if (!pid) {
 				return {
 					statusCode: 500,
@@ -17,7 +17,7 @@ module.exports = {
 			}
 
 			const memoryResult = await shell(`cat /proc/${pid}/status | grep VmRss`, { timeout: 5_000 });
-			const memoryResultArray = memoryResult.split(/\s+/).filter(Boolean);
+			const memoryResultArray = memoryResult.stdout.trim().split(/\s+/).filter(Boolean);
 
 			memory = Number(memoryResultArray[1]) * 1024;
 		}
