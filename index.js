@@ -6,6 +6,10 @@ const subroutes = [
 	["ssd", "ssd.js"]
 ];
 
+for (const [route, file] of subroutes) {
+	definition[route] = require(`./${file}`);
+}
+
 const server = require("http").createServer(async (req, res) => {
 	const url = new URL(req.url, baseURL);
 	const path = url.pathname.split("/").filter(Boolean);
@@ -30,10 +34,6 @@ const server = require("http").createServer(async (req, res) => {
 	}
 	else if (typeof target !== "function") {
 		throw new Error(`Internal API error - invalid definition for path ${path.join("/")}`);
-	}
-
-	for (const [route, file] of subroutes) {
-		definition[route] = require(`./${file}`);
 	}
 
 	const { error = null, data = null, headers = {}, statusCode = 200 } = await target(req, res, url);
