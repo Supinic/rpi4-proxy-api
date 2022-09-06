@@ -8,7 +8,7 @@ module.exports = {
 		let memory;
 		try {
 			const pidResult = await shell("pidof mysqld", { timeout: 5_000 });
-			const pid = pidResult.stdout;
+			const pid = pidResult.stdout.replaceAll(/\s+/g, "");
 			if (!pid) {
 				return {
 					statusCode: 500,
