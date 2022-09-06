@@ -16,7 +16,7 @@ module.exports = {
 				};
 			}
 
-			const memoryResult = await shell(`cat /proc/${pid}/status | grep VmRss`, { timeout: 5_000 });
+			const memoryResult = await shell(`cat /proc/${pid}/status | grep VmRSS`, { timeout: 5_000 });
 			const memoryResultArray = memoryResult.stdout.trim().split(/\s+/).filter(Boolean);
 
 			memory = Number(memoryResultArray[1]) * 1024;
