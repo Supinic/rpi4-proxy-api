@@ -1,5 +1,6 @@
 const port = 11111;
-const baseURL = `http://localhost:${port}/proxy`;
+const topLevelPath = "proxy";
+const baseURL = `http://localhost:${port}/${topLevelPath}`;
 
 const definition = {};
 const subroutes = [
@@ -12,7 +13,7 @@ for (const [route, file] of subroutes) {
 
 const server = require("http").createServer(async (req, res) => {
 	const url = new URL(req.url, baseURL);
-	const path = url.pathname.split("/").filter(Boolean);
+	const path = url.pathname.split("/").filter(i => Boolean(i) && i !== topLevelPath);
 
 	let target = definition[path[0]];
 	for (let i = 1; i < path.length; i++) {
