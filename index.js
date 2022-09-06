@@ -7,7 +7,7 @@ const subroutes = [
 ];
 
 for (const [route, file] of subroutes) {
-	definition[route] = require(`./${file}`);
+	definition[route] = require(`./routes/${file}`);
 }
 
 const server = require("http").createServer(async (req, res) => {
