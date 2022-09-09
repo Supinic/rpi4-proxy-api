@@ -3,9 +3,11 @@
 const { promisify } = require("util");
 const shell = promisify(require("child_process").exec);
 
+const memoryIdentifiers = ["VmRSS", "VmSwap"];
+
 module.exports = {
 	memoryUsage: async function () {
-		let memory;
+		let result;
 		try {
 			const pidResult = await shell("pidof mysqld", { timeout: 5_000 });
 			const pid = pidResult.stdout.trim();
@@ -16,10 +18,17 @@ module.exports = {
 				};
 			}
 
-			const memoryResult = await shell(`cat /proc/${pid}/status | grep VmRSS`, { timeout: 5_000 });
-			const memoryResultArray = memoryResult.stdout.trim().split(/\s+/).filter(Boolean);
+			const memoryResult = await shell(`cat /proc/${pid}/status`, { timeout: 5_000 });
+			const memoryResultArray = memoryResult.stdout.trim().split(/\n/).filter(Boolean);
 
-			memory = Number(memoryResultArray[1]) * 1024;
+			const values = memoryResultArray.filter(i => memoryIdentifiers.includes(i));
+			result = Object.fromEntries(values.map(i => {
+				const [identifier, memory] = i.replace(":", "").split(/\s+/).filter(Boolean);
+				return [
+					identifier,
+					Number(memory) * 1024
+				];
+			}));
 		}
 		catch (e) {
 			return {
@@ -30,7 +39,7 @@ module.exports = {
 
 		return {
 			statusCode: 200,
-			data: { memory }
+			data: { ...result }
 		};
 	}
 };
