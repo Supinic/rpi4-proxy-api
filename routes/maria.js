@@ -21,7 +21,7 @@ module.exports = {
 			const memoryResult = await shell(`cat /proc/${pid}/status`, { timeout: 5_000 });
 			const memoryResultArray = memoryResult.stdout.trim().split(/\n/).filter(Boolean);
 
-			const values = memoryResultArray.filter(i => memoryIdentifiers.includes(i));
+			const values = memoryResultArray.filter(string => memoryIdentifiers.some(identifier => string.includes(identifier)));
 			result = Object.fromEntries(values.map(i => {
 				const [identifier, memory] = i.replace(":", "").split(/\s+/).filter(Boolean);
 				return [
